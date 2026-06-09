@@ -1,0 +1,33 @@
+# sdkconfig.defaults.esp32s3
+# Optimasi untuk ESP32-S3 WROOM-1 N16R8 (16MB Flash, 8MB OPI PSRAM)
+# Target: NAT Router throughput maksimal
+
+# --- Console: USB Serial JTAG (wajib ESP32-S3 DevKitC) ---
+CONFIG_ESP_CONSOLE_UART_DEFAULT=n
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# --- Flash: 16MB untuk N16R8 ---
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="16MB"
+
+# --- PSRAM: Nonaktifkan (tidak dibutuhkan untuk NAT router) ---
+CONFIG_SPIRAM=n
+
+# --- lwIP TCP Buffer: Perbesar window agar TCP tidak throttle ---
+# Default 5744 byte → naik ke 57600 (10x)
+# Ini optimasi TERBESAR untuk throughput NAT
+CONFIG_LWIP_TCP_SND_BUF_DEFAULT=57600
+CONFIG_LWIP_TCP_WND_DEFAULT=57600
+CONFIG_LWIP_TCP_RECVMBOX_SIZE=64
+CONFIG_LWIP_UDP_RECVMBOX_SIZE=64
+CONFIG_LWIP_TCPIP_RECVMBOX_SIZE=64
+
+# --- lwIP PBUF: Lebih banyak packet buffer ---
+CONFIG_LWIP_PBUF_POOL_SIZE=64
+
+# --- NAPT Table: Lebih banyak koneksi simultan ---
+CONFIG_LWIP_IP_NAPT_MAX=512
+
+# --- Matikan fitur tidak perlu (hemat CPU per-paket) ---
+CONFIG_LWIP_IP_FRAG=n
+CONFIG_LWIP_IP_REASSEMBLY=n
