@@ -22,9 +22,8 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/project \
             -w /project/esp32_nat_router \
-            espressif/idf:v5.4 \
+            espressif/idf:release-v5.5 \
             bash -c "
-              pip install --upgrade idf-component-manager && \
               idf.py -B build_s3 \
                 -D SDKCONFIG_DEFAULTS='sdkconfig.defaults;sdkconfig.defaults.esp32s3' \
                 set-target esp32s3 && \
@@ -32,7 +31,7 @@ jobs:
                 -D SDKCONFIG_DEFAULTS='sdkconfig.defaults;sdkconfig.defaults.esp32s3' \
                 build
             "
-
+            
       - name: Kumpulkan binary
         run: |
           mkdir output
