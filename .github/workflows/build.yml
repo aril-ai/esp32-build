@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v5.3
+
     steps:
       - name: Checkout repo ini
         uses: actions/checkout@v4
@@ -16,13 +19,16 @@ jobs:
       - name: Terapkan sdkconfig optimasi N16R8
         run: cp sdkconfig.defaults.esp32s3 esp32_nat_router/sdkconfig.defaults.esp32s3
 
-      - name: Build dengan ESP-IDF
-        uses: espressif/esp-idf-ci-action@v1
-        with:
-          esp_idf_version: v5.3
-          target: esp32s3
-          path: esp32_nat_router
-          command: idf.py -B build_s3 -D "SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.defaults.esp32s3" build
+      - name: Build firmware
+        working-directory: esp32_nat_router
+        run: |
+          . $IDF_PATH/export.sh
+          idf.py -B build_s3 \
+            -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.esp32s3" \
+            set-target esp32s3
+          idf.py -B build_s3 \
+            -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.esp32s3" \
+            build
 
       - name: Kumpulkan binary
         run: |
